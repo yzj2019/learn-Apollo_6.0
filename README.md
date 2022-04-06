@@ -96,6 +96,28 @@
 
     修改后执行reload。
 
+- 踩坑5：
+
+  zlib 1.2.11不再提供，必须在源码里替换成zlib 1.2.12
+  - 修改这两个文件：`/apollo-6.0.0/.cache/bazel/540135163923dd7d5820f3ee4b306b32/external/io_bazel_rules_go/go/private/repositories.bzl`、`/apollo-6.0.0/.cache/bazel/540135163923dd7d5820f3ee4b306b32/external/rules_proto/proto/private/dependencies.bzl`：
+    - 替换prefix：1.2.11改成1.2.12
+    - 替换链接：源码里检索`https://zlib.net/zlib-1.2.11.tar.gz`，替换成`https://zlib.net/zlib-1.2.12.tar.gz`；
+    - 替换 SHA-256 hash：源码里检索`c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1`，替换成`91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9`
+  - 修改这三个文件：
+    - 复制前面改好的http_archive
+
+      ```bzl
+      http_archive(
+        name = "net_zlib",
+        build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
+        sha256 = "91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9",
+        strip_prefix = "zlib-1.2.12",
+        urls = ["https://zlib.net/zlib-1.2.12.tar.gz"],
+      )
+      ```
+
+    - 粘贴到`/apollo-6.0.0/.cache/bazel/540135163923dd7d5820f3ee4b306b32/external/upb/bazel/workspace_deps.bzl`、`/apollo-6.0.0/.cache/bazel/540135163923dd7d5820f3ee4b306b32/external/com_github_grpc_grpc/third_party/upb/bazel/workspace_deps.bzl`、`/apollo-6.0.0/.cache/bazel/540135163923dd7d5820f3ee4b306b32/external/com_google_protobuf/protobuf_deps.bzl`的对应位置
+
 进入操作：（在apollo源码根目录下执行）参见[这个链接](https://zhuanlan.zhihu.com/p/363883431)
 
 - 从本地镜像构建apollo容器：
