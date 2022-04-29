@@ -67,11 +67,18 @@ camera/lib/interface
 
 ![perception_implementation](.\figs\implementation.png)
 
+备注：以下lib代码中存在，但是架构图中未体现
+
+- tl_preprocessor根据高精地图tfl位置投影到图像上
+- motion_service & plane_motion 提供车辆位置服务
+
 ## 3、APP类：将lib中的类组合成基本的功能类
 
 camera/app
 
 ![perception_app](.\figs\app.png)
+
+traffic_light_camera_perception \ lane_camera_perception \ obstacle_camera_perception均派生自接口类base_camera_perception
 
 
 
